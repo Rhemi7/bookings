@@ -2,13 +2,13 @@ package render
 
 import (
 	"bytes"
+	"github.com/justinas/nosurf"
+	"github.com/rhemi7/bookings/internal/config"
+	"github.com/rhemi7/bookings/internal/config/models"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
-
-	"github.com/rhemi7/bookings/pkg/config"
-	"github.com/rhemi7/bookings/pkg/config/models"
 )
 
 var functions = template.FuncMap{}
@@ -20,17 +20,28 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // Rendertemplate using html
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	// create a template cache
 	// get the template cache from the app config
 
-	tc := app.TemplateCache
+	var tc map[string]*template.Template
 
+	if app.UseCache {
+		// get the template cache from the app config
+
+		tc = app.TemplateCache
+	} else {
+		// this is just used for testing, so that we rebuild
+		// the cache on every request
+
+		tc, _ = CreateTemplateCache()
+	}
 	// get requested template from cache
 	t, ok := tc[tmpl]
 	if !ok {
@@ -39,7 +50,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 
 	buf := new(bytes.Buffer)
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
 	_ = t.Execute(buf, td)
 
@@ -48,7 +59,6 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 	if err != nil {
 		log.Println("Error writing template to browser", err)
 	}
-
 }
 
 func CreateTemplateCache() (map[string]*template.Template, error) {

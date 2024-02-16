@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/rhemi7/bookings/pkg/config"
-	"github.com/rhemi7/bookings/pkg/handlers"
-	"github.com/rhemi7/bookings/pkg/render"
+	"github.com/rhemi7/bookings/internal/config"
+	"github.com/rhemi7/bookings/internal/handlers"
+	"github.com/rhemi7/bookings/internal/render"
 	"log"
 	"net/http"
 	"time"
