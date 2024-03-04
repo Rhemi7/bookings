@@ -1,6 +1,8 @@
 package models
 
-// Template Dta holds data set from handlers to template
+import "github.com/rhemi7/bookings/internal/forms"
+
+// TemplateData holds data set from handlers to template
 type TemplateData struct {
 	StringMap map[string]string
 	IntMap    map[string]int
@@ -10,4 +12,5 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
+	Form      *forms.Form
 }

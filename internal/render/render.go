@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"github.com/justinas/nosurf"
 	"github.com/rhemi7/bookings/internal/config"
-	"github.com/rhemi7/bookings/internal/config/models"
+	"github.com/rhemi7/bookings/internal/models"
 	"html/template"
 	"log"
 	"net/http"
